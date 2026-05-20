@@ -149,7 +149,7 @@ export const INFO_LOCATION = [
     value: "pdf_pack",
     label: "Our wedding info pack PDF (the document we email to inquiries)",
   },
-  { value: "in_head", label: "In my head — I just know" },
+  { value: "in_head", label: "In my head, I just know" },
   { value: "website", label: "On our website" },
   { value: "instagram", label: "Our Instagram highlights or posts" },
   {
@@ -184,7 +184,7 @@ export const HOLD_POLICY = [
   },
   {
     value: "no_formal_hold",
-    label: "We don’t formally hold dates — we just see who pays first",
+    label: "We don’t formally hold dates, we just see who pays first",
   },
   { value: "other", label: "Other" },
 ] as const;
@@ -204,10 +204,10 @@ export const VENUE_INFO_WILLINGNESS = [
   { value: "photos", label: "High-res photos of every space" },
   { value: "sample_contracts", label: "Sample contracts / T&Cs" },
   { value: "reviews", label: "Past reviews / testimonials" },
-  { value: "all_self_service", label: "All of it — the more self-service the better" },
+  { value: "all_self_service", label: "All of it. The more self-service the better" },
   {
     value: "none_inquire_first",
-    label: "None of the above — I want couples to inquire first",
+    label: "None of the above. I want couples to inquire first",
   },
 ] as const;
 
@@ -276,9 +276,8 @@ export const submitSchema = z
     holdPolicyOther: optShortStr,
     // Q11
     conversionRate: z.enum(CONVERSION_RATE),
-    // Q12
-    doubleBooking: z.enum(DOUBLE_BOOKING),
-    // Q13
+    // Q12 (was double-booking) cut from survey — no longer accepted.
+    // Q12 is now most_frustrating
     mostFrustrating: requiredText,
     // Section 4 (all optional)
     visionSkipped: z.boolean().default(false),
@@ -286,8 +285,8 @@ export const submitSchema = z
     coupleDirectBooking: z.enum(COUPLE_DIRECT_BOOKING).nullable().optional(),
     holdReleaseWaitlist: z.enum(HOLD_RELEASE_WAITLIST).nullable().optional(),
     venueInfoWillingness: z.array(z.string()).default([]),
-    visionKillerFeature: optStr,
-    // Q19
+    // Q18 (vision killer feature) cut — overlap with willingness-to-pay
+    // Q17 (was Q19)
     softwareCategories: z.array(z.string()).min(1, "Pick at least one"),
     softwareOther: optShortStr,
     eventsSoftwareReview: optStr,

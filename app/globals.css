@@ -175,14 +175,14 @@
   }
   .text-section-title {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-    font-size: 44px;
+    font-size: 36px;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.02em;
   }
   @media (max-width: 640px) {
     .text-section-title {
-      font-size: 32px;
+      font-size: 28px;
     }
   }
   .text-thank-headline {

@@ -89,7 +89,6 @@ export async function POST(req: NextRequest) {
           : null,
 
         conversionRate: data.conversionRate,
-        doubleBooking: data.doubleBooking,
 
         mostFrustrating: data.mostFrustrating,
 
@@ -104,9 +103,6 @@ export async function POST(req: NextRequest) {
           ? null
           : (data.holdReleaseWaitlist ?? null),
         venueInfoWillingness: visionSkipped ? [] : data.venueInfoWillingness,
-        visionKillerFeature: visionSkipped
-          ? null
-          : (data.visionKillerFeature ?? null),
 
         softwareCategories: data.softwareCategories,
         softwareOther: data.softwareCategories.includes("other")

@@ -62,7 +62,6 @@ type FormState = {
   holdPolicy: string[];
   holdPolicyOther: string;
   conversionRate: string;
-  doubleBooking: string;
   mostFrustrating: string;
 
   visionSkipped: boolean;
@@ -70,7 +69,6 @@ type FormState = {
   coupleDirectBooking: string;
   holdReleaseWaitlist: string;
   venueInfoWillingness: string[];
-  visionKillerFeature: string;
 
   softwareCategories: string[];
   softwareOther: string;
@@ -109,14 +107,12 @@ const initialState: FormState = {
   holdPolicy: [],
   holdPolicyOther: "",
   conversionRate: "",
-  doubleBooking: "",
   mostFrustrating: "",
   visionSkipped: false,
   realtimeAvailability: "",
   coupleDirectBooking: "",
   holdReleaseWaitlist: "",
   venueInfoWillingness: [],
-  visionKillerFeature: "",
   softwareCategories: [],
   softwareOther: "",
   eventsSoftwareReview: "",
@@ -177,8 +173,8 @@ function OptionRow({
   return (
     <label
       className={[
-        "flex min-h-[60px] w-full cursor-pointer items-center gap-4",
-        "rounded-[12px] border bg-lk-surface px-6 py-5",
+        "flex min-h-[52px] w-full cursor-pointer items-center gap-3",
+        "rounded-[12px] border bg-lk-surface px-5 py-3.5",
         "transition-[background-color,border-color,box-shadow] duration-150 ease-out",
         checked
           ? "border-[1.5px] border-lk-accent bg-lk-accent-soft"
@@ -230,8 +226,16 @@ function OptionRow({
   );
 }
 
-function OptionStack({ children }: { children: React.ReactNode }) {
-  return <div className="mt-3 grid gap-3">{children}</div>;
+function OptionStack({
+  children,
+  cols = 1,
+}: {
+  children: React.ReactNode;
+  cols?: 1 | 2;
+}) {
+  const gridCols =
+    cols === 2 ? "mt-3 grid gap-2 sm:grid-cols-2" : "mt-3 grid gap-2";
+  return <div className={gridCols}>{children}</div>;
 }
 
 function TextInput({
@@ -316,8 +320,8 @@ function QuestionBlock({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mb-8" data-field={fieldKey}>
-      <div className="flex items-baseline gap-4">
+    <div className="mb-6" data-field={fieldKey}>
+      <div className="flex items-baseline gap-3">
         <span className="text-question-title text-lk-accent">
           {number}.
         </span>
@@ -328,7 +332,7 @@ function QuestionBlock({
           {helper}
         </p>
       )}
-      <div className="mt-3">{children}</div>
+      <div className="mt-2">{children}</div>
     </div>
   );
 }
@@ -510,7 +514,7 @@ function SectionHeader({
   subtitle: string;
 }) {
   return (
-    <header className="pt-8 pb-12">
+    <header className="pt-6 pb-8">
       <h1 className="text-section-title text-lk-ink">{title}</h1>
       <p className="text-section-subtitle text-lk-ink-muted mt-2">
         {subtitle}
@@ -541,7 +545,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <div className="mt-8 w-full max-w-[480px] rounded-[16px] border border-lk-line bg-lk-surface-muted p-6 sm:p-8 text-left">
         <p className="text-body text-lk-ink">
-          <span className="font-semibold">This is not a sales pitch</span> —
+          <span className="font-semibold">This is not a sales pitch.</span>{" "}
           I&apos;m trying to understand:
         </p>
         <ul className="mt-4 flex flex-col gap-3">
@@ -599,10 +603,10 @@ function Step1() {
 
       <QuestionBlock
         number={1}
-        title="In your busiest month of the year, roughly how many weddings does your venue host?"
+        title="In your busiest month, how many weddings do you host?"
         fieldKey="peakWeddingsPerMonth"
       >
-        <OptionStack>
+        <OptionStack cols={2}>
           {(
             [
               ["0-1", "0–1"],
@@ -632,7 +636,7 @@ function Step1() {
 
       <QuestionBlock
         number={2}
-        title="Roughly what % of your bookings are weddings vs other events (corporate, private functions)?"
+        title="What % of your bookings are weddings vs other events (corporate, private functions)?"
         fieldKey="eventMix"
       >
         <OptionStack>
@@ -790,7 +794,7 @@ function Step2() {
 
       <QuestionBlock
         number={5}
-        title="For your most recent wedding, what tools did you use to manage it from inquiry to event day?"
+        title="For your most recent wedding, what tools did you use?"
         helper="Tick all that apply across each group below."
         fieldKey="toolsCommunication"
       >
@@ -878,7 +882,7 @@ function Step2() {
 
       <QuestionBlock
         number={6}
-        title="When a couple asks a question about your venue (sleeps, power, BYO, layout, packages, etc.), where do you have to look to find the answer?"
+        title="When a couple asks a question about your venue (sleeps, power, BYO, layout, packages), where do you look it up?"
         helper="Tick all that apply."
         fieldKey="infoLocation"
       >
@@ -912,7 +916,7 @@ function Step2() {
 
       <QuestionBlock
         number={7}
-        title="When something changes at your venue (a new package, a price update, a refurbished cottage, a new policy), how do you make sure everyone has the latest info — your team, couples, vendors?"
+        title="When something changes at your venue (a new package, price update, refurbished cottage, new policy), how do you keep everyone (team, couples, vendors) on the same page?"
         fieldKey="updatePropagation"
       >
         <OptionStack>
@@ -979,13 +983,13 @@ function Step3() {
     <>
       <SectionHeader
         title="Operational pain"
-        subtitle="Where the friction shows up. Be honest — we want the real answer."
+        subtitle="Where the friction shows up. Be honest, we want the real answer."
       />
 
       <QuestionBlock
         number={8}
-        title="Across everyone involved on your side (you, owner, coordinator, assistants, anyone), roughly how many total hours of admin go into an average wedding from first inquiry to the day after?"
-        helper="Include emails, WhatsApps, calls, contracts, invoices, scheduling, vendor coordination, the lot."
+        title="Across your whole team, how many hours of admin go into an average wedding from first inquiry to the day after?"
+        helper="You, owner, coordinator, assistants, anyone. Includes emails, WhatsApps, calls, contracts, invoices, scheduling, vendor coordination."
         fieldKey="adminHoursPerWedding"
       >
         <OptionStack>
@@ -1018,10 +1022,11 @@ function Step3() {
 
       <QuestionBlock
         number={9}
-        title="Of that admin time, roughly what % is stuff you’ve done a hundred times before — answering the same questions, sending the same documents, chasing the same info?"
+        title="Of that admin, what % is repeat work?"
+        helper="Answering the same questions, sending the same documents, chasing the same info."
         fieldKey="pctRepetitive"
       >
-        <OptionStack>
+        <OptionStack cols={2}>
           {(
             [
               ["under_20", "Less than 20%"],
@@ -1082,10 +1087,10 @@ function Step3() {
 
       <QuestionBlock
         number={11}
-        title="Out of every 10 wedding inquiries you receive, roughly how many turn into actual bookings?"
+        title="Out of every 10 wedding inquiries, how many turn into bookings?"
         fieldKey="conversionRate"
       >
-        <OptionStack>
+        <OptionStack cols={2}>
           {(
             [
               ["1_or_fewer", "1 or fewer"],
@@ -1115,39 +1120,8 @@ function Step3() {
 
       <QuestionBlock
         number={12}
-        title="In the last 12 months, has your venue ever had a date conflict — two bookings or holds for the same date that needed resolving?"
-        helper="Be honest, it happens."
-        fieldKey="doubleBooking"
-      >
-        <OptionStack>
-          {(
-            [
-              ["more_than_once", "Yes, more than once"],
-              ["once", "Yes, once"],
-              ["almost", "Almost — we caught it in time"],
-              ["never", "No, never"],
-              ["not_sure", "Not sure / haven’t thought about it"],
-            ] as const
-          ).map(([val, label]) => (
-            <OptionRow
-              key={val}
-              type="radio"
-              name="doubleBooking"
-              value={val}
-              checked={form.doubleBooking === val}
-              onChange={() => set("doubleBooking", val)}
-            >
-              {label}
-            </OptionRow>
-          ))}
-        </OptionStack>
-        {errors.doubleBooking && <ErrorText>{errors.doubleBooking}</ErrorText>}
-      </QuestionBlock>
-
-      <QuestionBlock
-        number={13}
         title="What’s the part of managing a wedding that drives you mad?"
-        helper="Be honest — one sentence is fine."
+        helper="Be honest. One sentence is fine."
         fieldKey="mostFrustrating"
       >
         <TextArea
@@ -1176,8 +1150,8 @@ function Step4() {
       />
 
       <QuestionBlock
-        number={14}
-        title="If couples could see your real-time availability on a public profile — with packages, FAQs, photos — would that be:"
+        number={13}
+        title="If couples could see your real-time availability on a public profile (with packages, FAQs, photos), how would you feel about it?"
         fieldKey="realtimeAvailability"
       >
         <OptionStack>
@@ -1185,7 +1159,7 @@ function Step4() {
             [
               [
                 "very_helpful_fully_public",
-                "Very helpful (fewer “is this date free?” inquiries) — and we’d want it fully public",
+                "Very helpful (fewer “is this date free?” inquiries) and we’d want it fully public",
               ],
               [
                 "helpful_gated",
@@ -1194,7 +1168,7 @@ function Step4() {
               ["neutral", "Neutral"],
               [
                 "concern",
-                "A concern — we prefer couples to inquire first so we can qualify them",
+                "A concern. We prefer couples to inquire first so we can qualify them",
               ],
               ["no", "We wouldn’t want this at all"],
             ] as const
@@ -1214,8 +1188,8 @@ function Step4() {
       </QuestionBlock>
 
       <QuestionBlock
-        number={15}
-        title="Imagine a couple could browse your venue, see availability, sign a contract, and pay a deposit — all on the platform — without you handling each step manually. How does that sit with you?"
+        number={14}
+        title="Imagine a couple could browse your venue, see availability, sign a contract, and pay a deposit, all on the platform, without you handling each step. How does that sit with you?"
         fieldKey="coupleDirectBooking"
       >
         <OptionStack>
@@ -1223,7 +1197,7 @@ function Step4() {
             [
               [
                 "full_automation",
-                "I’d love that — let the platform handle it, I’ll just confirm",
+                "I’d love that. Let the platform handle it, I’ll just confirm",
               ],
               [
                 "partial",
@@ -1255,23 +1229,23 @@ function Step4() {
       </QuestionBlock>
 
       <QuestionBlock
-        number={16}
-        title="When a couple holds a date but doesn’t pay the deposit, sometimes other interested couples lose out. If the platform automatically managed a waitlist — releasing the date to the next couple if the first doesn’t pay in time — would you use it?"
+        number={15}
+        title="If the platform auto-released held dates to the next couple on the waitlist when the first didn’t pay in time, would you use it?"
         fieldKey="holdReleaseWaitlist"
       >
         <OptionStack>
           {(
             [
-              ["yes", "Yes — that’s exactly the kind of automation I want"],
+              ["yes", "Yes. That’s exactly the kind of automation I want"],
               [
                 "maybe_with_control",
-                "Maybe — only if I have full control over the timing and who’s on the waitlist",
+                "Maybe, only if I have full control over the timing and who’s on the waitlist",
               ],
               [
                 "manual_decision",
                 "I’d want to be notified and decide manually each time",
               ],
-              ["no", "No — this needs human judgement, not automation"],
+              ["no", "No. This needs human judgement, not automation"],
               ["not_sure", "Not sure"],
             ] as const
           ).map(([val, label]) => (
@@ -1290,7 +1264,7 @@ function Step4() {
       </QuestionBlock>
 
       <QuestionBlock
-        number={17}
+        number={16}
         title="How much detail about your venue would you be willing to put on a public profile so couples can answer their own questions before reaching out?"
         helper="Tick all that apply."
         fieldKey="venueInfoWillingness"
@@ -1310,16 +1284,6 @@ function Step4() {
         </OptionStack>
       </QuestionBlock>
 
-      <QuestionBlock
-        number={18}
-        title="Of everything we’ve described in this section, what’s the ONE thing that, if a tool did it well, would make you sign up tomorrow?"
-        fieldKey="visionKillerFeature"
-      >
-        <TextArea
-          value={form.visionKillerFeature}
-          onChange={(v) => set("visionKillerFeature", v)}
-        />
-      </QuestionBlock>
     </>
   );
 }
@@ -1352,7 +1316,7 @@ function Step5() {
       />
 
       <QuestionBlock
-        number={19}
+        number={17}
         title="Do you currently pay for any software that helps you run the venue?"
         helper="Tick all that apply."
         fieldKey="softwareCategories"
@@ -1406,8 +1370,8 @@ function Step5() {
       </QuestionBlock>
 
       <QuestionBlock
-        number={20}
-        title="What single thing, if a tool did it well, would make you actually pay for it?"
+        number={18}
+        title="What single thing would make a tool worth paying for?"
         fieldKey="willingnessToPay"
       >
         <TextArea
@@ -1436,7 +1400,7 @@ function Step6() {
       />
 
       <QuestionBlock
-        number={21}
+        number={19}
         title="Would you be open to a 15-minute call where I show you what I’m planning and ask for your input?"
         fieldKey="callInterest"
       >
@@ -1445,15 +1409,15 @@ function Step6() {
             [
               [
                 "yes_pilot",
-                "Yes — and I’d consider being one of the first pilot venues",
+                "Yes, and I’d consider being one of the first pilot venues",
               ],
               [
                 "yes_input",
-                "Yes — happy to give input even if I don’t end up using it",
+                "Yes, happy to give input even if I don’t end up using it",
               ],
               [
                 "maybe_depends_month",
-                "Maybe — depends what month you’re asking",
+                "Maybe, depends what month you’re asking",
               ],
               ["no", "No thanks"],
             ] as const
@@ -1474,9 +1438,8 @@ function Step6() {
       </QuestionBlock>
 
       <QuestionBlock
-        number={22}
+        number={20}
         title="Want to see the results or be considered for the pilot? Leave your details."
-        helper="All fields optional."
         fieldKey="contact"
       >
         <div className="grid gap-3">
@@ -1621,7 +1584,7 @@ export default function SurveyShell({
         form.toolsOther.trim() !== "";
       if (!anyTool)
         e.toolsCommunication =
-          "Pick at least one — across any category, or fill in booking software / other";
+          "Pick at least one across any category, or fill in booking software / other";
       if (form.infoLocation.length === 0)
         e.infoLocation = "Pick at least one";
       if (form.infoLocation.includes("other") && !form.infoLocationOther.trim())
@@ -1640,7 +1603,6 @@ export default function SurveyShell({
       if (form.holdPolicy.includes("other") && !form.holdPolicyOther.trim())
         e.holdPolicyOther = "Please tell us what";
       if (!form.conversionRate) e.conversionRate = "Please choose one";
-      if (!form.doubleBooking) e.doubleBooking = "Please choose one";
       if (!form.mostFrustrating.trim())
         e.mostFrustrating = "One sentence is fine";
     } else if (s === 4) {
@@ -1755,7 +1717,6 @@ export default function SurveyShell({
           ? form.holdPolicyOther.trim()
           : null,
         conversionRate: form.conversionRate,
-        doubleBooking: form.doubleBooking,
         mostFrustrating: form.mostFrustrating.trim(),
         visionSkipped: form.visionSkipped,
         realtimeAvailability: form.visionSkipped
@@ -1770,9 +1731,6 @@ export default function SurveyShell({
         venueInfoWillingness: form.visionSkipped
           ? []
           : form.venueInfoWillingness,
-        visionKillerFeature: form.visionSkipped
-          ? null
-          : form.visionKillerFeature.trim() || null,
         softwareCategories: form.softwareCategories,
         softwareOther: form.softwareCategories.includes("other")
           ? form.softwareOther.trim()

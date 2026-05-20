@@ -82,8 +82,8 @@ export const responses = pgTable(
     // Q11 Conversion rate
     conversionRate: text("conversion_rate").notNull(),
 
-    // Q12 Double-booking history
-    doubleBooking: text("double_booking").notNull(),
+    // Q12 was Double-booking history — column kept for legacy rows, no longer asked.
+    doubleBooking: text("double_booking"),
 
     // Q13 Open frustration
     mostFrustrating: text("most_frustrating").notNull(),

@@ -24,7 +24,7 @@ export default async function ThanksPage({
 
       <p className="text-intro text-lk-ink-muted mt-6 max-w-[480px]">
         {isNoEvents
-          ? "Thanks for letting me know — sounds like you’re not the right fit for this one. Appreciate the click."
+          ? "Thanks for letting me know. Sounds like you’re not the right fit for this one. Appreciate the click."
           : "Thanks for taking the time. I’ll be in touch with the anonymised results in a few weeks. If you ticked yes to a call, I’ll reach out within a week."}
       </p>
 
