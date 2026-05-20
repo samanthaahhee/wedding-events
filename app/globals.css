@@ -163,14 +163,14 @@
   /* Display — Plus Jakarta Sans */
   .text-welcome-headline {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-    font-size: 72px;
+    font-size: 56px;
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.025em;
   }
   @media (max-width: 640px) {
     .text-welcome-headline {
-      font-size: 48px;
+      font-size: 40px;
     }
   }
   .text-section-title {

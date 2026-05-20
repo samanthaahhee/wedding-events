@@ -1,14 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Calendar,
-  Check,
-  Clock,
-  Heart,
-  ArrowRight,
-  ArrowLeft,
-} from "lucide-react";
+import { Check, Clock, ArrowRight, ArrowLeft } from "lucide-react";
 import {
   createContext,
   useCallback,
@@ -529,11 +522,8 @@ function SectionHeader({
 
 function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
-    <div className="flex flex-col items-center text-center pt-12 pb-20 sm:pt-20">
-      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-lk-accent-soft">
-        <Heart size={40} strokeWidth={2} className="text-lk-accent" />
-      </div>
-      <h1 className="text-welcome-headline text-lk-ink mt-16">
+    <div className="flex flex-col items-center text-center pt-16 pb-20 sm:pt-24">
+      <h1 className="text-welcome-headline text-lk-ink">
         Wedding Venue
         <br />
         Operations Survey
