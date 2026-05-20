@@ -1,0 +1,402 @@
+{
+  "id": "f380ed59-bfa1-40c8-bda9-8d024255d0ee",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.outreach_log": {
+      "name": "outreach_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "venue_name": {
+          "name": "venue_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "venue_slug": {
+          "name": "venue_slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_instagram": {
+          "name": "contact_instagram",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "region": {
+          "name": "region",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "venue_type": {
+          "name": "venue_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_sent_at": {
+          "name": "email_sent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_batch": {
+          "name": "email_batch",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ig_dm_sent_at": {
+          "name": "ig_dm_sent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "followup_sent_at": {
+          "name": "followup_sent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "response_id": {
+          "name": "response_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "responded": {
+          "name": "responded",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "(response_id IS NOT NULL)",
+            "type": "stored"
+          }
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_outreach_log_email_batch": {
+          "name": "idx_outreach_log_email_batch",
+          "columns": [
+            {
+              "expression": "email_batch",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_outreach_log_responded": {
+          "name": "idx_outreach_log_responded",
+          "columns": [
+            {
+              "expression": "responded",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "outreach_log_response_id_responses_id_fk": {
+          "name": "outreach_log_response_id_responses_id_fk",
+          "tableFrom": "outreach_log",
+          "tableTo": "responses",
+          "columnsFrom": [
+            "response_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outreach_log_venue_slug_unique": {
+          "name": "outreach_log_venue_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "venue_slug"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.responses": {
+      "name": "responses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'direct'"
+        },
+        "venue_slug": {
+          "name": "venue_slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "events_last_12mo": {
+          "name": "events_last_12mo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pct_weddings": {
+          "name": "pct_weddings",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "day_to_day_owner": {
+          "name": "day_to_day_owner",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tools_used": {
+          "name": "tools_used",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "tools_used_other_software": {
+          "name": "tools_used_other_software",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tools_used_other": {
+          "name": "tools_used_other",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "repetitive_questions": {
+          "name": "repetitive_questions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "most_frustrating": {
+          "name": "most_frustrating",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paid_for_software": {
+          "name": "paid_for_software",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paid_for_software_name": {
+          "name": "paid_for_software_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paid_for_software_stopped_reason": {
+          "name": "paid_for_software_stopped_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "marketplace_sentiment": {
+          "name": "marketplace_sentiment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "call_interest": {
+          "name": "call_interest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "venue_name": {
+          "name": "venue_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_name": {
+          "name": "contact_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_role": {
+          "name": "contact_role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "whatsapp": {
+          "name": "whatsapp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completion_time_seconds": {
+          "name": "completion_time_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "followed_up": {
+          "name": "followed_up",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {
+        "idx_responses_source": {
+          "name": "idx_responses_source",
+          "columns": [
+            {
+              "expression": "source",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_responses_created_at": {
+          "name": "idx_responses_created_at",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_responses_call_interest": {
+          "name": "idx_responses_call_interest",
+          "columns": [
+            {
+              "expression": "call_interest",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
