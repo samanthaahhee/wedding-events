@@ -1166,20 +1166,14 @@ function Step3() {
 // Step 4 — Vision check (Q14–Q18, all optional)
 // ============================================================
 
-function Step4({ onSkip }: { onSkip: () => void }) {
+function Step4() {
   const { form, set, toggleArr } = useForm();
   return (
     <>
       <SectionHeader
         title="Vision check"
-        subtitle="These questions are optional and a bit more forward-looking. Skip if you’d rather not."
+        subtitle="A few forward-looking questions about a possible future tool."
       />
-      <div className="-mt-6 mb-12">
-        <SecondaryButton variant="accent" onClick={onSkip}>
-          Skip this section
-          <ArrowRight size={16} strokeWidth={2} />
-        </SecondaryButton>
-      </div>
 
       <QuestionBlock
         number={14}
@@ -1537,7 +1531,7 @@ const STEP_LABELS = [
   "Your venue",
   "How you work",
   "Operational pain",
-  "Vision check (optional)",
+  "Vision check",
   "Software & money",
   "Last bit",
 ];
@@ -1708,19 +1702,6 @@ export default function SurveyShell({
     goToStep(step - 1);
   }
 
-  function handleSkipVision() {
-    setForm((prev) => ({
-      ...prev,
-      visionSkipped: true,
-      realtimeAvailability: "",
-      coupleDirectBooking: "",
-      holdReleaseWaitlist: "",
-      venueInfoWillingness: [],
-      visionKillerFeature: "",
-    }));
-    goToStep(5);
-  }
-
   async function handleSubmit(ev?: React.FormEvent) {
     if (ev) ev.preventDefault();
     setServerError(null);
@@ -1862,7 +1843,7 @@ export default function SurveyShell({
             {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && <Step3 />}
-            {step === 4 && <Step4 onSkip={handleSkipVision} />}
+            {step === 4 && <Step4 />}
             {step === 5 && <Step5 />}
             {step === 6 && <Step6 />}
 
