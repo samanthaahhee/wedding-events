@@ -188,7 +188,7 @@
   .text-thank-headline {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
     font-size: 56px;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
   }
@@ -206,7 +206,7 @@
   /* Sans — Inter */
   .text-progress-label {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
   }
   .text-intro {
     font-size: 19px;
@@ -215,7 +215,7 @@
   }
   .text-section-subtitle {
     font-size: 17px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.55;
   }
   .text-question-title {
@@ -236,7 +236,7 @@
   }
   .text-option-label {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.4;
   }
   .text-helper-text {
@@ -246,7 +246,7 @@
   }
   .text-caption {
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
   }
   .text-button-label {
     font-size: 16px;
