@@ -321,18 +321,18 @@ function QuestionBlock({
 }) {
   return (
     <div className="mb-6" data-field={fieldKey}>
-      <div className="flex items-baseline gap-3">
-        <span className="text-question-title text-lk-accent">
+      <div className="flex items-baseline gap-2.5">
+        <span className="text-question-number text-lk-accent">
           {number}.
         </span>
         <h3 className="text-question-title text-lk-ink">{title}</h3>
       </div>
       {helper && (
-        <p className="text-helper-text text-lk-ink-muted italic mt-1">
+        <p className="text-helper-text text-lk-ink-muted mt-1.5">
           {helper}
         </p>
       )}
-      <div className="mt-2">{children}</div>
+      <div className="mt-3">{children}</div>
     </div>
   );
 }

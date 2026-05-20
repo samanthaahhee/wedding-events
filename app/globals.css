@@ -127,19 +127,19 @@
   --lk-surface: #ffffff;
   --lk-surface-muted: #fbf8f4;
 
-  /* Text */
+  /* Text — darkened ink-muted from #7A6A60 to pass AA at body sizes on cream */
   --lk-ink: #2a1f1a;
-  --lk-ink-muted: #7a6a60;
-  --lk-ink-subtle: #b5a89e;
+  --lk-ink-muted: #5c4e45;
+  --lk-ink-subtle: #9c8e83;
   --lk-line: #e5dcd2;
 
-  /* Accent */
-  --lk-accent: #d2664a;
-  --lk-accent-pressed: #b85638;
+  /* Accent — darkened from #D2664A to push small-text contrast over AA */
+  --lk-accent: #c25938;
+  --lk-accent-pressed: #a4471f;
   --lk-accent-soft: #f5e0d6;
 
   /* Shadows */
-  --lk-shadow-focus: 0 0 0 3px rgba(210, 102, 74, 0.2);
+  --lk-shadow-focus: 0 0 0 3px rgba(194, 89, 56, 0.2);
   --lk-shadow-soft-top: 0 -4px 12px rgba(42, 31, 26, 0.05);
   --lk-shadow-thumb: 0 2px 8px rgba(42, 31, 26, 0.12);
 }
@@ -215,13 +215,19 @@
   }
   .text-section-subtitle {
     font-size: 17px;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.55;
   }
   .text-question-title {
     font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .text-question-number {
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.4;
+    letter-spacing: 0.02em;
   }
   .text-body {
     font-size: 16px;
