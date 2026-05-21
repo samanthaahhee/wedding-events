@@ -27,7 +27,7 @@ import {
 // Types
 // ============================================================
 
-type PeakBucket = "" | "0-1" | "2-3" | "4-6" | "7-10" | "10+" | "none";
+type PeakBucket = "" | "0-1" | "2-3" | "4-6" | "7-10" | "10+";
 
 type FormState = {
   peakWeddingsPerMonth: PeakBucket;
@@ -604,7 +604,6 @@ function Step1() {
               ["4-6", "4–6"],
               ["7-10", "7–10"],
               ["10+", "10+"],
-              ["none", "We don’t host weddings"],
             ] as const
           ).map(([val, label]) => (
             <OptionRow
@@ -1555,7 +1554,6 @@ export default function SurveyShell({
     if (s === 1) {
       if (!form.peakWeddingsPerMonth)
         e.peakWeddingsPerMonth = "Please choose one";
-      if (form.peakWeddingsPerMonth === "none") return e;
       if (!form.eventMix) e.eventMix = "Please choose one";
       if (!form.dayToDayOwner) e.dayToDayOwner = "Please choose one";
       if (form.dayToDayOwner === "other" && !form.dayToDayOwnerOther.trim())
@@ -1640,11 +1638,6 @@ export default function SurveyShell({
     setErrors(es);
     if (Object.keys(es).length > 0) {
       scrollToFirstError(es);
-      return;
-    }
-    // Q1 = "none" → exit to no-events thanks
-    if (step === 1 && form.peakWeddingsPerMonth === "none") {
-      router.push("/survey/thanks?variant=no-events");
       return;
     }
     goToStep(step + 1);

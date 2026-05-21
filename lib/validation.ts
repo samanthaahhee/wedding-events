@@ -7,7 +7,6 @@ export const PEAK_WEDDINGS_PER_MONTH = [
   "4-6",
   "7-10",
   "10+",
-  "none",
 ] as const;
 
 export const EVENT_MIX = [

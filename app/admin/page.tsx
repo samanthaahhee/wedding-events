@@ -44,7 +44,6 @@ const PEAK_LABEL: Record<(typeof PEAK_WEDDINGS_PER_MONTH)[number], string> = {
   "4-6": "4–6",
   "7-10": "7–10",
   "10+": "10+",
-  none: "Don’t host weddings",
 };
 
 const EVENT_MIX_LABEL: Record<(typeof EVENT_MIX)[number], string> = {
