@@ -369,9 +369,12 @@ export default async function AdminDashboard() {
     VENUE_INFO_WILLINGNESS,
   );
 
-  // Free-text feeds
+  // Free-text feeds — both columns are now nullable, narrow before passing on.
   const frustrations = all
-    .filter((r) => r.mostFrustrating && r.mostFrustrating.trim().length > 0)
+    .filter(
+      (r): r is typeof r & { mostFrustrating: string } =>
+        !!r.mostFrustrating && r.mostFrustrating.trim().length > 0,
+    )
     .map((r) => ({
       id: r.id,
       text: r.mostFrustrating,
@@ -380,7 +383,10 @@ export default async function AdminDashboard() {
     }));
 
   const willingness = all
-    .filter((r) => r.willingnessToPay && r.willingnessToPay.trim().length > 0)
+    .filter(
+      (r): r is typeof r & { willingnessToPay: string } =>
+        !!r.willingnessToPay && r.willingnessToPay.trim().length > 0,
+    )
     .map((r) => ({
       id: r.id,
       text: r.willingnessToPay,

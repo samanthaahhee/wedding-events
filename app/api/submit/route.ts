@@ -48,15 +48,15 @@ export async function POST(req: NextRequest) {
         venueSlug: data.venueSlug ?? null,
 
         peakWeddingsPerMonth: data.peakWeddingsPerMonth,
-        eventMix: data.eventMix,
+        eventMix: data.eventMix ?? null,
 
-        dayToDayOwner: data.dayToDayOwner,
+        dayToDayOwner: data.dayToDayOwner ?? null,
         dayToDayOwnerOther:
           data.dayToDayOwner === "other"
             ? (data.dayToDayOwnerOther ?? null)
             : null,
 
-        bookingSource: data.bookingSource,
+        bookingSource: data.bookingSource ?? null,
         bookingSourceOther:
           data.bookingSource === "other"
             ? (data.bookingSourceOther ?? null)
@@ -68,29 +68,46 @@ export async function POST(req: NextRequest) {
         toolsBookingSoftwareName: data.toolsBookingSoftwareName?.trim() || null,
         toolsInvoicing: data.toolsInvoicing,
         toolsOther: data.toolsOther?.trim() || null,
+        toolsCommunicationOther: data.toolsCommunication.includes("other")
+          ? data.toolsCommunicationOther?.trim() || null
+          : null,
+        toolsCalendarOther: data.toolsCalendar.includes("other")
+          ? data.toolsCalendarOther?.trim() || null
+          : null,
+        toolsDocumentsOther: data.toolsDocuments.includes("other")
+          ? data.toolsDocumentsOther?.trim() || null
+          : null,
 
         infoLocation: data.infoLocation,
         infoLocationOther: data.infoLocation.includes("other")
           ? (data.infoLocationOther ?? null)
           : null,
 
-        updatePropagation: data.updatePropagation,
+        updatePropagation: data.updatePropagation ?? null,
         updatePropagationOnePlaceWhere:
           data.updatePropagation === "one_place"
             ? (data.updatePropagationOnePlaceWhere ?? null)
             : null,
 
-        adminHoursPerWedding: data.adminHoursPerWedding,
-        pctRepetitive: data.pctRepetitive,
+        adminHoursPerWedding: data.adminHoursPerWedding ?? null,
+        pctRepetitive: data.pctRepetitive ?? null,
 
         holdPolicy: data.holdPolicy,
         holdPolicyOther: data.holdPolicy.includes("other")
           ? (data.holdPolicyOther ?? null)
           : null,
+        softHoldDuration: data.holdPolicy.includes("soft_hold")
+          ? (data.softHoldDuration ?? null)
+          : null,
+        softHoldDurationOther:
+          data.holdPolicy.includes("soft_hold") &&
+          data.softHoldDuration === "other"
+            ? data.softHoldDurationOther?.trim() || null
+            : null,
 
-        conversionRate: data.conversionRate,
+        conversionRate: data.conversionRate ?? null,
 
-        mostFrustrating: data.mostFrustrating,
+        mostFrustrating: data.mostFrustrating?.trim() || null,
 
         visionSkipped,
         realtimeAvailability: visionSkipped
@@ -112,7 +129,7 @@ export async function POST(req: NextRequest) {
           ? (data.eventsSoftwareReview ?? null)
           : null,
 
-        willingnessToPay: data.willingnessToPay,
+        willingnessToPay: data.willingnessToPay?.trim() || null,
         callInterest: data.callInterest,
 
         venueName: data.venueName?.trim() || null,

@@ -115,8 +115,8 @@ export const TOOLS_COMMUNICATION = [
   { value: "email", label: "Email" },
   { value: "whatsapp", label: "WhatsApp" },
   { value: "phone", label: "Phone calls" },
-  { value: "sms", label: "SMS" },
   { value: "instagram_dm", label: "Instagram DMs" },
+  { value: "other", label: "Other" },
 ] as const;
 
 export const TOOLS_CALENDAR = [
@@ -126,11 +126,22 @@ export const TOOLS_CALENDAR = [
   },
   { value: "paper_diary", label: "Paper diary / printed calendar / wall planner" },
   { value: "whiteboard", label: "A whiteboard" },
+  { value: "other", label: "Other" },
 ] as const;
 
 export const TOOLS_DOCUMENTS = [
   { value: "word_pdf", label: "Word docs or PDFs" },
   { value: "gdocs_sheets_excel", label: "Google Docs / Sheets or Excel" },
+  { value: "website", label: "On our website" },
+  { value: "other", label: "Other" },
+] as const;
+
+export const SOFT_HOLD_DURATION = [
+  { value: "24h", label: "24 hours" },
+  { value: "48h", label: "48 hours" },
+  { value: "3d", label: "3 days" },
+  { value: "1w", label: "1 week" },
+  { value: "other", label: "Other" },
 ] as const;
 
 export const TOOLS_INVOICING = [
@@ -159,7 +170,6 @@ export const INFO_LOCATION = [
   { value: "spreadsheet", label: "A spreadsheet" },
   { value: "paper_file", label: "A paper file or printed binder" },
   { value: "ask_colleague", label: "I ask a colleague or the owner" },
-  { value: "make_up", label: "I make it up on the spot consistently" },
   { value: "other", label: "Other" },
 ] as const;
 
@@ -238,20 +248,24 @@ const requiredText = z.string().min(1).max(5000);
 
 const whatsappRegex = /^(\+27|0)[\s-]?\d{1,2}[\s-]?\d{3}[\s-]?\d{4}$/;
 
+// All fields are optional except the two we need to make a response actionable
+// (peakWeddingsPerMonth, callInterest). Server still validates formats for
+// email / WhatsApp when provided. Conditional "Other → fill the text"
+// nag rules removed: respondents can skip any question.
 export const submitSchema = z
   .object({
     source: z.string().min(1).max(64).default("direct"),
     venueSlug: z.string().max(128).nullable().optional(),
 
-    // Q1
+    // Q1 — required
     peakWeddingsPerMonth: z.enum(["0-1", "2-3", "4-6", "7-10", "10+"]),
     // Q2
-    eventMix: z.enum(EVENT_MIX),
+    eventMix: z.enum(EVENT_MIX).nullable().optional(),
     // Q3
-    dayToDayOwner: z.enum(DAY_TO_DAY_OWNER),
+    dayToDayOwner: z.enum(DAY_TO_DAY_OWNER).nullable().optional(),
     dayToDayOwnerOther: optShortStr,
     // Q4
-    bookingSource: z.enum(BOOKING_SOURCE),
+    bookingSource: z.enum(BOOKING_SOURCE).nullable().optional(),
     bookingSourceOther: optShortStr,
     // Q5
     toolsCommunication: z.array(z.string()).default([]),
@@ -260,40 +274,46 @@ export const submitSchema = z
     toolsBookingSoftwareName: optShortStr,
     toolsInvoicing: z.array(z.string()).default([]),
     toolsOther: optShortStr,
+    toolsCommunicationOther: optShortStr,
+    toolsCalendarOther: optShortStr,
+    toolsDocumentsOther: optShortStr,
     // Q6
-    infoLocation: z.array(z.string()).min(1, "Pick at least one"),
+    infoLocation: z.array(z.string()).default([]),
     infoLocationOther: optShortStr,
     // Q7
-    updatePropagation: z.enum(UPDATE_PROPAGATION),
+    updatePropagation: z.enum(UPDATE_PROPAGATION).nullable().optional(),
     updatePropagationOnePlaceWhere: optShortStr,
     // Q8
-    adminHoursPerWedding: z.enum(ADMIN_HOURS_PER_WEDDING),
+    adminHoursPerWedding: z.enum(ADMIN_HOURS_PER_WEDDING).nullable().optional(),
     // Q9
-    pctRepetitive: z.enum(PCT_REPETITIVE),
+    pctRepetitive: z.enum(PCT_REPETITIVE).nullable().optional(),
     // Q10
-    holdPolicy: z.array(z.string()).min(1, "Pick at least one"),
+    holdPolicy: z.array(z.string()).default([]),
     holdPolicyOther: optShortStr,
+    softHoldDuration: z
+      .enum(["24h", "48h", "3d", "1w", "other"])
+      .nullable()
+      .optional(),
+    softHoldDurationOther: optShortStr,
     // Q11
-    conversionRate: z.enum(CONVERSION_RATE),
-    // Q12 (was double-booking) cut from survey — no longer accepted.
-    // Q12 is now most_frustrating
-    mostFrustrating: requiredText,
+    conversionRate: z.enum(CONVERSION_RATE).nullable().optional(),
+    // Q12 — open frustration (was required, now optional)
+    mostFrustrating: optStr,
     // Section 4 (all optional)
     visionSkipped: z.boolean().default(false),
     realtimeAvailability: z.enum(REALTIME_AVAILABILITY).nullable().optional(),
     coupleDirectBooking: z.enum(COUPLE_DIRECT_BOOKING).nullable().optional(),
     holdReleaseWaitlist: z.enum(HOLD_RELEASE_WAITLIST).nullable().optional(),
     venueInfoWillingness: z.array(z.string()).default([]),
-    // Q18 (vision killer feature) cut — overlap with willingness-to-pay
-    // Q17 (was Q19)
-    softwareCategories: z.array(z.string()).min(1, "Pick at least one"),
+    // Q17 — software currently paid for
+    softwareCategories: z.array(z.string()).default([]),
     softwareOther: optShortStr,
     eventsSoftwareReview: optStr,
-    // Q20
-    willingnessToPay: requiredText,
-    // Q21
+    // Q18 — willingness to pay (was required, now optional)
+    willingnessToPay: optStr,
+    // Q19 — required
     callInterest: z.enum(CALL_INTEREST),
-    // Q22 (all optional)
+    // Q20 — contact, all optional
     venueName: optShortStr,
     contactName: optShortStr,
     contactRole: optShortStr,
@@ -304,65 +324,7 @@ export const submitSchema = z
     website: z.string().max(0, "spam"),
   })
   .superRefine((v, ctx) => {
-    // Q3 Other requires text
-    if (v.dayToDayOwner === "other" && !v.dayToDayOwnerOther?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["dayToDayOwnerOther"],
-        message: "Please tell us who",
-      });
-    }
-    // Q4 Other requires text
-    if (v.bookingSource === "other" && !v.bookingSourceOther?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["bookingSourceOther"],
-        message: "Please tell us how",
-      });
-    }
-    // Q5 — at least one item across all tools_* arrays OR booking_software_name OR tools_other
-    const anyTool =
-      v.toolsCommunication.length > 0 ||
-      v.toolsCalendar.length > 0 ||
-      v.toolsDocuments.length > 0 ||
-      v.toolsInvoicing.length > 0 ||
-      (v.toolsBookingSoftwareName?.trim()?.length ?? 0) > 0 ||
-      (v.toolsOther?.trim()?.length ?? 0) > 0;
-    if (!anyTool) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["toolsCommunication"],
-        message: "Pick at least one tool, or fill in booking software / other",
-      });
-    }
-    // Q6 Other
-    if (v.infoLocation.includes("other") && !v.infoLocationOther?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["infoLocationOther"],
-        message: "Please tell us where",
-      });
-    }
-    // Q7 one_place requires "where"
-    if (
-      v.updatePropagation === "one_place" &&
-      !v.updatePropagationOnePlaceWhere?.trim()
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["updatePropagationOnePlaceWhere"],
-        message: "Which place?",
-      });
-    }
-    // Q10 Other
-    if (v.holdPolicy.includes("other") && !v.holdPolicyOther?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["holdPolicyOther"],
-        message: "Please tell us what",
-      });
-    }
-    // Q19 — 'none' cannot coexist with other selections
+    // Data integrity: "None" software can't coexist with other picks
     if (
       v.softwareCategories.includes("none") &&
       v.softwareCategories.length > 1
@@ -371,28 +333,6 @@ export const submitSchema = z
         code: z.ZodIssueCode.custom,
         path: ["softwareCategories"],
         message: "“None” can’t be combined with other answers",
-      });
-    }
-    // Q19 Other text
-    if (
-      v.softwareCategories.includes("other") &&
-      !v.softwareOther?.trim()
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["softwareOther"],
-        message: "Please tell us which other software",
-      });
-    }
-    // Q19 conditional follow-up
-    if (
-      v.softwareCategories.includes("events_crm") &&
-      !v.eventsSoftwareReview?.trim()
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["eventsSoftwareReview"],
-        message: "Which one, and what do you like or dislike about it?",
       });
     }
     // Email format if provided

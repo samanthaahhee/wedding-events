@@ -43,6 +43,9 @@ type FormState = {
   toolsBookingSoftwareName: string;
   toolsInvoicing: string[];
   toolsOther: string;
+  toolsCommunicationOther: string;
+  toolsCalendarOther: string;
+  toolsDocumentsOther: string;
 
   infoLocation: string[];
   infoLocationOther: string;
@@ -54,6 +57,8 @@ type FormState = {
   pctRepetitive: string;
   holdPolicy: string[];
   holdPolicyOther: string;
+  softHoldDuration: string;
+  softHoldDurationOther: string;
   conversionRate: string;
   mostFrustrating: string;
 
@@ -91,6 +96,9 @@ const initialState: FormState = {
   toolsBookingSoftwareName: "",
   toolsInvoicing: [],
   toolsOther: "",
+  toolsCommunicationOther: "",
+  toolsCalendarOther: "",
+  toolsDocumentsOther: "",
   infoLocation: [],
   infoLocationOther: "",
   updatePropagation: "",
@@ -99,6 +107,8 @@ const initialState: FormState = {
   pctRepetitive: "",
   holdPolicy: [],
   holdPolicyOther: "",
+  softHoldDuration: "",
+  softHoldDurationOther: "",
   conversionRate: "",
   mostFrustrating: "",
   visionSkipped: false,
@@ -801,6 +811,15 @@ function Step2() {
             </OptionRow>
           ))}
         </div>
+        {form.toolsCommunication.includes("other") && (
+          <div className="mt-3">
+            <TextInput
+              value={form.toolsCommunicationOther}
+              onChange={(v) => set("toolsCommunicationOther", v)}
+              placeholder="Which other communication tool?"
+            />
+          </div>
+        )}
 
         <ToolSubLabel>Calendars / scheduling</ToolSubLabel>
         <div className="grid gap-3">
@@ -816,6 +835,15 @@ function Step2() {
             </OptionRow>
           ))}
         </div>
+        {form.toolsCalendar.includes("other") && (
+          <div className="mt-3">
+            <TextInput
+              value={form.toolsCalendarOther}
+              onChange={(v) => set("toolsCalendarOther", v)}
+              placeholder="Which other calendar tool?"
+            />
+          </div>
+        )}
 
         <ToolSubLabel>Documents / info</ToolSubLabel>
         <div className="grid gap-3">
@@ -831,6 +859,15 @@ function Step2() {
             </OptionRow>
           ))}
         </div>
+        {form.toolsDocuments.includes("other") && (
+          <div className="mt-3">
+            <TextInput
+              value={form.toolsDocumentsOther}
+              onChange={(v) => set("toolsDocumentsOther", v)}
+              placeholder="Which other documents tool?"
+            />
+          </div>
+        )}
 
         <ToolSubLabel>Booking / venue software</ToolSubLabel>
         <p className="text-helper-text text-lk-ink-muted -mt-1 mb-3">
@@ -856,13 +893,6 @@ function Step2() {
             </OptionRow>
           ))}
         </div>
-
-        <ToolSubLabel>Other</ToolSubLabel>
-        <TextInput
-          value={form.toolsOther}
-          onChange={(v) => set("toolsOther", v)}
-          placeholder="Anything else?"
-        />
 
         {errors.toolsCommunication && (
           <ErrorText>{errors.toolsCommunication}</ErrorText>
@@ -1068,6 +1098,44 @@ function Step3() {
             />
             {errors.holdPolicyOther && (
               <ErrorText>{errors.holdPolicyOther}</ErrorText>
+            )}
+          </div>
+        )}
+        {form.holdPolicy.includes("soft_hold") && (
+          <div className="mt-5" data-field="softHoldDuration">
+            <p className="text-helper-text text-lk-ink-muted mb-2">
+              How long is the soft hold?
+            </p>
+            <OptionStack cols={2}>
+              {(
+                [
+                  ["24h", "24 hours"],
+                  ["48h", "48 hours"],
+                  ["3d", "3 days"],
+                  ["1w", "1 week"],
+                  ["other", "Other"],
+                ] as const
+              ).map(([val, label]) => (
+                <OptionRow
+                  key={val}
+                  type="radio"
+                  name="softHoldDuration"
+                  value={val}
+                  checked={form.softHoldDuration === val}
+                  onChange={() => set("softHoldDuration", val)}
+                >
+                  {label}
+                </OptionRow>
+              ))}
+            </OptionStack>
+            {form.softHoldDuration === "other" && (
+              <div className="mt-3">
+                <TextInput
+                  value={form.softHoldDurationOther}
+                  onChange={(v) => set("softHoldDurationOther", v)}
+                  placeholder="How long, then?"
+                />
+              </div>
             )}
           </div>
         )}
@@ -1549,80 +1617,34 @@ export default function SurveyShell({
     router.push(`/survey?${params.toString()}`);
   }
 
-  function validateStep(s: number): Record<string, string> {
+  /**
+   * Minimal validation at final-submit time only. We only block submission
+   * if the two truly load-bearing fields are missing (Q1 + Q19), or if a
+   * provided contact field has an invalid format. Everything else is
+   * accepted as-is.
+   */
+  function validateFinal(): Record<string, string> {
     const e: Record<string, string> = {};
-    if (s === 1) {
-      if (!form.peakWeddingsPerMonth)
-        e.peakWeddingsPerMonth = "Please choose one";
-      if (!form.eventMix) e.eventMix = "Please choose one";
-      if (!form.dayToDayOwner) e.dayToDayOwner = "Please choose one";
-      if (form.dayToDayOwner === "other" && !form.dayToDayOwnerOther.trim())
-        e.dayToDayOwnerOther = "Please tell us who";
-      if (!form.bookingSource) e.bookingSource = "Please choose one";
-      if (form.bookingSource === "other" && !form.bookingSourceOther.trim())
-        e.bookingSourceOther = "Please tell us how";
-    } else if (s === 2) {
-      const anyTool =
-        form.toolsCommunication.length +
-          form.toolsCalendar.length +
-          form.toolsDocuments.length +
-          form.toolsInvoicing.length >
-          0 ||
-        form.toolsBookingSoftwareName.trim() !== "" ||
-        form.toolsOther.trim() !== "";
-      if (!anyTool)
-        e.toolsCommunication =
-          "Pick at least one across any category, or fill in booking software / other";
-      if (form.infoLocation.length === 0)
-        e.infoLocation = "Pick at least one";
-      if (form.infoLocation.includes("other") && !form.infoLocationOther.trim())
-        e.infoLocationOther = "Please tell us where";
-      if (!form.updatePropagation) e.updatePropagation = "Please choose one";
-      if (
-        form.updatePropagation === "one_place" &&
-        !form.updatePropagationOnePlaceWhere.trim()
-      )
-        e.updatePropagationOnePlaceWhere = "Which place?";
-    } else if (s === 3) {
-      if (!form.adminHoursPerWedding)
-        e.adminHoursPerWedding = "Please choose one";
-      if (!form.pctRepetitive) e.pctRepetitive = "Please choose one";
-      if (form.holdPolicy.length === 0) e.holdPolicy = "Pick at least one";
-      if (form.holdPolicy.includes("other") && !form.holdPolicyOther.trim())
-        e.holdPolicyOther = "Please tell us what";
-      if (!form.conversionRate) e.conversionRate = "Please choose one";
-      if (!form.mostFrustrating.trim())
-        e.mostFrustrating = "One sentence is fine";
-    } else if (s === 4) {
-      // optional — no required fields
-    } else if (s === 5) {
-      if (form.softwareCategories.length === 0)
-        e.softwareCategories = "Pick at least one";
-      if (
-        form.softwareCategories.includes("other") &&
-        !form.softwareOther.trim()
-      )
-        e.softwareOther = "Please tell us which other software";
-      if (
-        form.softwareCategories.includes("events_crm") &&
-        !form.eventsSoftwareReview.trim()
-      )
-        e.eventsSoftwareReview = "Tell us which one and what you think";
-      if (!form.willingnessToPay.trim())
-        e.willingnessToPay = "One sentence is fine";
-    } else if (s === 6) {
-      if (!form.callInterest) e.callInterest = "Please choose one";
-      if (
-        form.email.trim() &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
-      )
-        e.email = "That doesn’t look like a valid email";
-      if (form.whatsapp.trim() && !whatsappRegex.test(form.whatsapp.trim()))
-        e.whatsapp =
-          "Use a SA number like +27 82 123 4567 or 082 123 4567";
-    }
+    if (!form.peakWeddingsPerMonth)
+      e.peakWeddingsPerMonth = "Please choose a volume to give context for your answers.";
+    if (!form.callInterest)
+      e.callInterest = "Please pick one so I know whether to follow up.";
+    if (
+      form.email.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
+    )
+      e.email = "That doesn’t look like a valid email.";
+    if (form.whatsapp.trim() && !whatsappRegex.test(form.whatsapp.trim()))
+      e.whatsapp = "Use a SA number like +27 82 123 4567 or 082 123 4567.";
     return e;
   }
+
+  const STEP_OF_FIELD: Record<string, number> = {
+    peakWeddingsPerMonth: 1,
+    callInterest: 6,
+    email: 6,
+    whatsapp: 6,
+  };
 
   function scrollToFirstError(es: Record<string, string>) {
     const first = Object.keys(es)[0];
@@ -1634,12 +1656,10 @@ export default function SurveyShell({
   }
 
   function handleContinue() {
-    const es = validateStep(step);
-    setErrors(es);
-    if (Object.keys(es).length > 0) {
-      scrollToFirstError(es);
-      return;
-    }
+    // No validation — let respondents move freely between steps. Whatever
+    // they've filled (or not) carries forward; final validation happens
+    // only at Submit.
+    setErrors({});
     goToStep(step + 1);
   }
 
@@ -1650,9 +1670,16 @@ export default function SurveyShell({
   async function handleSubmit(ev?: React.FormEvent) {
     if (ev) ev.preventDefault();
     setServerError(null);
-    const es = validateStep(6);
+    const es = validateFinal();
     setErrors(es);
     if (Object.keys(es).length > 0) {
+      // If the offending field lives on an earlier step, navigate the
+      // respondent back to it so they can fix it in context.
+      const firstKey = Object.keys(es)[0];
+      const targetStep = STEP_OF_FIELD[firstKey];
+      if (typeof targetStep === "number" && targetStep !== step) {
+        goToStep(targetStep);
+      }
       scrollToFirstError(es);
       return;
     }
@@ -1666,13 +1693,13 @@ export default function SurveyShell({
         source,
         venueSlug,
         peakWeddingsPerMonth: form.peakWeddingsPerMonth,
-        eventMix: form.eventMix,
-        dayToDayOwner: form.dayToDayOwner,
+        eventMix: form.eventMix || null,
+        dayToDayOwner: form.dayToDayOwner || null,
         dayToDayOwnerOther:
           form.dayToDayOwner === "other"
             ? form.dayToDayOwnerOther.trim()
             : null,
-        bookingSource: form.bookingSource,
+        bookingSource: form.bookingSource || null,
         bookingSourceOther:
           form.bookingSource === "other"
             ? form.bookingSourceOther.trim()
@@ -1684,23 +1711,40 @@ export default function SurveyShell({
           form.toolsBookingSoftwareName.trim() || null,
         toolsInvoicing: form.toolsInvoicing,
         toolsOther: form.toolsOther.trim() || null,
+        toolsCommunicationOther: form.toolsCommunication.includes("other")
+          ? form.toolsCommunicationOther.trim() || null
+          : null,
+        toolsCalendarOther: form.toolsCalendar.includes("other")
+          ? form.toolsCalendarOther.trim() || null
+          : null,
+        toolsDocumentsOther: form.toolsDocuments.includes("other")
+          ? form.toolsDocumentsOther.trim() || null
+          : null,
         infoLocation: form.infoLocation,
         infoLocationOther: form.infoLocation.includes("other")
           ? form.infoLocationOther.trim()
           : null,
-        updatePropagation: form.updatePropagation,
+        updatePropagation: form.updatePropagation || null,
         updatePropagationOnePlaceWhere:
           form.updatePropagation === "one_place"
             ? form.updatePropagationOnePlaceWhere.trim()
             : null,
-        adminHoursPerWedding: form.adminHoursPerWedding,
-        pctRepetitive: form.pctRepetitive,
+        adminHoursPerWedding: form.adminHoursPerWedding || null,
+        pctRepetitive: form.pctRepetitive || null,
         holdPolicy: form.holdPolicy,
         holdPolicyOther: form.holdPolicy.includes("other")
           ? form.holdPolicyOther.trim()
           : null,
-        conversionRate: form.conversionRate,
-        mostFrustrating: form.mostFrustrating.trim(),
+        softHoldDuration: form.holdPolicy.includes("soft_hold")
+          ? form.softHoldDuration || null
+          : null,
+        softHoldDurationOther:
+          form.holdPolicy.includes("soft_hold") &&
+          form.softHoldDuration === "other"
+            ? form.softHoldDurationOther.trim() || null
+            : null,
+        conversionRate: form.conversionRate || null,
+        mostFrustrating: form.mostFrustrating.trim() || null,
         visionSkipped: form.visionSkipped,
         realtimeAvailability: form.visionSkipped
           ? null
@@ -1721,7 +1765,7 @@ export default function SurveyShell({
         eventsSoftwareReview: form.softwareCategories.includes("events_crm")
           ? form.eventsSoftwareReview.trim()
           : null,
-        willingnessToPay: form.willingnessToPay.trim(),
+        willingnessToPay: form.willingnessToPay.trim() || null,
         callInterest: form.callInterest,
         venueName: form.venueName.trim() || null,
         contactName: form.contactName.trim() || null,

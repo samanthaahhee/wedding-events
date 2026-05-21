@@ -25,14 +25,14 @@ export const responses = pgTable(
     peakWeddingsPerMonth: text("peak_weddings_per_month").notNull(),
 
     // Q2 Event mix
-    eventMix: text("event_mix").notNull(),
+    eventMix: text("event_mix"),
 
     // Q3 Day-to-day owner
-    dayToDayOwner: text("day_to_day_owner").notNull(),
+    dayToDayOwner: text("day_to_day_owner"),
     dayToDayOwnerOther: text("day_to_day_owner_other"),
 
     // Q4 Who books
-    bookingSource: text("booking_source").notNull(),
+    bookingSource: text("booking_source"),
     bookingSourceOther: text("booking_source_other"),
 
     // Q5 Tools (grouped)
@@ -54,6 +54,11 @@ export const responses = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
     toolsOther: text("tools_other"),
+    // Per-group "Other" free-text inputs (when the matching tools_* array
+    // includes the "other" value)
+    toolsCommunicationOther: text("tools_communication_other"),
+    toolsCalendarOther: text("tools_calendar_other"),
+    toolsDocumentsOther: text("tools_documents_other"),
 
     // Q6 Where the info lives
     infoLocation: text("info_location")
@@ -63,14 +68,14 @@ export const responses = pgTable(
     infoLocationOther: text("info_location_other"),
 
     // Q7 Update propagation
-    updatePropagation: text("update_propagation").notNull(),
+    updatePropagation: text("update_propagation"),
     updatePropagationOnePlaceWhere: text("update_propagation_one_place_where"),
 
     // Q8 Admin hours per wedding
-    adminHoursPerWedding: text("admin_hours_per_wedding").notNull(),
+    adminHoursPerWedding: text("admin_hours_per_wedding"),
 
     // Q9 % repetitive
-    pctRepetitive: text("pct_repetitive").notNull(),
+    pctRepetitive: text("pct_repetitive"),
 
     // Q10 Hold policy
     holdPolicy: text("hold_policy")
@@ -78,15 +83,18 @@ export const responses = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
     holdPolicyOther: text("hold_policy_other"),
+    // Soft hold duration follow-up (only set when hold_policy includes "soft_hold")
+    softHoldDuration: text("soft_hold_duration"),
+    softHoldDurationOther: text("soft_hold_duration_other"),
 
     // Q11 Conversion rate
-    conversionRate: text("conversion_rate").notNull(),
+    conversionRate: text("conversion_rate"),
 
     // Q12 was Double-booking history — column kept for legacy rows, no longer asked.
     doubleBooking: text("double_booking"),
 
-    // Q13 Open frustration
-    mostFrustrating: text("most_frustrating").notNull(),
+    // Q12 (formerly Q13) — open frustration
+    mostFrustrating: text("most_frustrating"),
 
     // Section 4 marker (Vision Check)
     visionSkipped: boolean("vision_skipped").notNull().default(false),
@@ -112,8 +120,8 @@ export const responses = pgTable(
     softwareOther: text("software_other"),
     eventsSoftwareReview: text("events_software_review"),
 
-    // Q20 Willingness to pay (qualitative)
-    willingnessToPay: text("willingness_to_pay").notNull(),
+    // Q18 (formerly Q20) — willingness to pay
+    willingnessToPay: text("willingness_to_pay"),
 
     // Q21 Open to a call
     callInterest: text("call_interest").notNull(),
