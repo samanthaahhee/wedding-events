@@ -603,7 +603,7 @@ function Step1() {
 
       <QuestionBlock
         number={1}
-        title="In your busiest month, how many weddings do you host?"
+        title="On average, how many weddings per month do you host during peak season (Oct–April)?"
         fieldKey="peakWeddingsPerMonth"
       >
         <OptionStack cols={2}>
