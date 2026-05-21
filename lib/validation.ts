@@ -316,7 +316,9 @@ export const submitSchema = z
     willingnessToPay: optStr,
     // Q19 (now optional)
     callInterest: z.enum(CALL_INTEREST).nullable().optional(),
-    // Q20 — contact, all optional
+    // Q20 — open-text "anything else?"
+    additionalComments: optStr,
+    // Q21 — contact, all optional
     venueName: optShortStr,
     contactName: optShortStr,
     contactRole: optShortStr,

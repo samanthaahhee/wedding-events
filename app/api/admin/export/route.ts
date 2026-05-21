@@ -54,6 +54,7 @@ const COLUMNS: { key: keyof typeof responses.$inferSelect; header: string }[] = 
   { key: "eventsSoftwareReview", header: "events_software_review" },
   { key: "willingnessToPay", header: "willingness_to_pay" },
   { key: "callInterest", header: "call_interest" },
+  { key: "additionalComments", header: "additional_comments" },
   { key: "venueName", header: "venue_name" },
   { key: "contactName", header: "contact_name" },
   { key: "contactRole", header: "contact_role" },

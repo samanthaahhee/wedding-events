@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
 
         willingnessToPay: data.willingnessToPay?.trim() || null,
         callInterest: data.callInterest ?? null,
+        additionalComments: data.additionalComments?.trim() || null,
 
         venueName: data.venueName?.trim() || null,
         contactName: data.contactName?.trim() || null,

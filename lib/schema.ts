@@ -126,7 +126,10 @@ export const responses = pgTable(
     // Q19 — open to a call (now fully optional)
     callInterest: text("call_interest"),
 
-    // Q22 Contact (all optional)
+    // Final open-text catch-all ("Anything else you'd like to add?")
+    additionalComments: text("additional_comments"),
+
+    // Q21 (formerly Q22) — contact, all optional
     venueName: text("venue_name"),
     contactName: text("contact_name"),
     contactRole: text("contact_role"),

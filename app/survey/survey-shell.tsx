@@ -73,6 +73,7 @@ type FormState = {
   willingnessToPay: string;
 
   callInterest: string;
+  additionalComments: string;
   venueName: string;
   contactName: string;
   contactRole: string;
@@ -120,6 +121,7 @@ const initialState: FormState = {
   eventsSoftwareReview: "",
   willingnessToPay: "",
   callInterest: "",
+  additionalComments: "",
   venueName: "",
   contactName: "",
   contactRole: "",
@@ -1495,6 +1497,18 @@ function Step6() {
 
       <QuestionBlock
         number={20}
+        title="Anything else you’d like to add?"
+        helper="Optional. Anything we missed, any concerns, anything you want to flag."
+        fieldKey="additionalComments"
+      >
+        <TextArea
+          value={form.additionalComments}
+          onChange={(v) => set("additionalComments", v)}
+        />
+      </QuestionBlock>
+
+      <QuestionBlock
+        number={21}
         title="Want to see the results or be considered for the pilot? Leave your details."
         fieldKey="contact"
       >
@@ -1729,6 +1743,7 @@ export default function SurveyShell({
           : null,
         willingnessToPay: form.willingnessToPay.trim() || null,
         callInterest: form.callInterest || null,
+        additionalComments: form.additionalComments.trim() || null,
         venueName: form.venueName.trim() || null,
         contactName: form.contactName.trim() || null,
         contactRole: form.contactRole.trim() || null,

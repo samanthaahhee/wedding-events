@@ -254,6 +254,7 @@ export default async function AdminDashboard() {
       events_software_review: r.eventsSoftwareReview,
       willingness_to_pay: r.willingnessToPay,
       call_interest: r.callInterest,
+      additional_comments: r.additionalComments,
       venue_name: r.venueName,
       contact_name: r.contactName,
       contact_role: r.contactRole,
@@ -390,6 +391,18 @@ export default async function AdminDashboard() {
     .map((r) => ({
       id: r.id,
       text: r.willingnessToPay,
+      venue: r.venueName,
+      createdAt: r.createdAt.toISOString(),
+    }));
+
+  const additional = all
+    .filter(
+      (r): r is typeof r & { additionalComments: string } =>
+        !!r.additionalComments && r.additionalComments.trim().length > 0,
+    )
+    .map((r) => ({
+      id: r.id,
+      text: r.additionalComments,
       venue: r.venueName,
       createdAt: r.createdAt.toISOString(),
     }));
@@ -568,7 +581,7 @@ export default async function AdminDashboard() {
           </Section>
 
           {/* Section 6 */}
-          <Section title="Next steps (Q19)" subtitle="Section 6 aggregates">
+          <Section title="Next steps (Q19–Q20)" subtitle="Section 6 aggregates">
             <Mini title="Q19 — Open to a call?">
               <BarChart
                 rows={call.map((c) => ({
@@ -578,6 +591,9 @@ export default async function AdminDashboard() {
                 total={total}
                 sort={false}
               />
+            </Mini>
+            <Mini title="Q20 — Anything else? (open text)">
+              <TextFeed items={additional} />
             </Mini>
           </Section>
 
