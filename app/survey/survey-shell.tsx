@@ -20,7 +20,6 @@ import {
   TOOLS_DOCUMENTS,
   TOOLS_INVOICING,
   VENUE_INFO_WILLINGNESS,
-  whatsappRegex,
 } from "@/lib/validation";
 
 // ============================================================
@@ -1617,34 +1616,9 @@ export default function SurveyShell({
     router.push(`/survey?${params.toString()}`);
   }
 
-  /**
-   * Minimal validation at final-submit time only. We only block submission
-   * if the two truly load-bearing fields are missing (Q1 + Q19), or if a
-   * provided contact field has an invalid format. Everything else is
-   * accepted as-is.
-   */
-  function validateFinal(): Record<string, string> {
-    const e: Record<string, string> = {};
-    if (!form.peakWeddingsPerMonth)
-      e.peakWeddingsPerMonth = "Please choose a volume to give context for your answers.";
-    if (!form.callInterest)
-      e.callInterest = "Please pick one so I know whether to follow up.";
-    if (
-      form.email.trim() &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
-    )
-      e.email = "That doesn’t look like a valid email.";
-    if (form.whatsapp.trim() && !whatsappRegex.test(form.whatsapp.trim()))
-      e.whatsapp = "Use a SA number like +27 82 123 4567 or 082 123 4567.";
-    return e;
-  }
-
-  const STEP_OF_FIELD: Record<string, number> = {
-    peakWeddingsPerMonth: 1,
-    callInterest: 6,
-    email: 6,
-    whatsapp: 6,
-  };
+  // No client-side validation. Every field is optional. The server accepts
+  // any payload shape (within the Zod schema's optional bounds) so the user
+  // can never be blocked from submitting whatever they've filled in.
 
   function scrollToFirstError(es: Record<string, string>) {
     const first = Object.keys(es)[0];
@@ -1670,19 +1644,7 @@ export default function SurveyShell({
   async function handleSubmit(ev?: React.FormEvent) {
     if (ev) ev.preventDefault();
     setServerError(null);
-    const es = validateFinal();
-    setErrors(es);
-    if (Object.keys(es).length > 0) {
-      // If the offending field lives on an earlier step, navigate the
-      // respondent back to it so they can fix it in context.
-      const firstKey = Object.keys(es)[0];
-      const targetStep = STEP_OF_FIELD[firstKey];
-      if (typeof targetStep === "number" && targetStep !== step) {
-        goToStep(targetStep);
-      }
-      scrollToFirstError(es);
-      return;
-    }
+    setErrors({});
 
     setSubmitting(true);
     try {
@@ -1692,7 +1654,7 @@ export default function SurveyShell({
       const payload = {
         source,
         venueSlug,
-        peakWeddingsPerMonth: form.peakWeddingsPerMonth,
+        peakWeddingsPerMonth: form.peakWeddingsPerMonth || null,
         eventMix: form.eventMix || null,
         dayToDayOwner: form.dayToDayOwner || null,
         dayToDayOwnerOther:
@@ -1766,7 +1728,7 @@ export default function SurveyShell({
           ? form.eventsSoftwareReview.trim()
           : null,
         willingnessToPay: form.willingnessToPay.trim() || null,
-        callInterest: form.callInterest,
+        callInterest: form.callInterest || null,
         venueName: form.venueName.trim() || null,
         contactName: form.contactName.trim() || null,
         contactRole: form.contactRole.trim() || null,

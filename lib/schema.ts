@@ -21,8 +21,8 @@ export const responses = pgTable(
     source: text("source").notNull().default("direct"),
     venueSlug: text("venue_slug"),
 
-    // Q1 Peak weddings per month (in busiest month)
-    peakWeddingsPerMonth: text("peak_weddings_per_month").notNull(),
+    // Q1 — peak events per month (now fully optional)
+    peakWeddingsPerMonth: text("peak_weddings_per_month"),
 
     // Q2 Event mix
     eventMix: text("event_mix"),
@@ -123,8 +123,8 @@ export const responses = pgTable(
     // Q18 (formerly Q20) — willingness to pay
     willingnessToPay: text("willingness_to_pay"),
 
-    // Q21 Open to a call
-    callInterest: text("call_interest").notNull(),
+    // Q19 — open to a call (now fully optional)
+    callInterest: text("call_interest"),
 
     // Q22 Contact (all optional)
     venueName: text("venue_name"),

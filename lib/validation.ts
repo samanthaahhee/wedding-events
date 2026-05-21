@@ -257,8 +257,11 @@ export const submitSchema = z
     source: z.string().min(1).max(64).default("direct"),
     venueSlug: z.string().max(128).nullable().optional(),
 
-    // Q1 — required
-    peakWeddingsPerMonth: z.enum(["0-1", "2-3", "4-6", "7-10", "10+"]),
+    // Q1 (now optional, any of the buckets or null)
+    peakWeddingsPerMonth: z
+      .enum(["0-1", "2-3", "4-6", "7-10", "10+"])
+      .nullable()
+      .optional(),
     // Q2
     eventMix: z.enum(EVENT_MIX).nullable().optional(),
     // Q3
@@ -311,8 +314,8 @@ export const submitSchema = z
     eventsSoftwareReview: optStr,
     // Q18 — willingness to pay (was required, now optional)
     willingnessToPay: optStr,
-    // Q19 — required
-    callInterest: z.enum(CALL_INTEREST),
+    // Q19 (now optional)
+    callInterest: z.enum(CALL_INTEREST).nullable().optional(),
     // Q20 — contact, all optional
     venueName: optShortStr,
     contactName: optShortStr,
@@ -335,27 +338,9 @@ export const submitSchema = z
         message: "“None” can’t be combined with other answers",
       });
     }
-    // Email format if provided
-    if (v.email && v.email.trim().length > 0) {
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim());
-      if (!ok) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["email"],
-          message: "That doesn’t look like a valid email",
-        });
-      }
-    }
-    // WhatsApp format if provided
-    if (v.whatsapp && v.whatsapp.trim().length > 0) {
-      if (!whatsappRegex.test(v.whatsapp.trim())) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["whatsapp"],
-          message: "Use a SA number like +27 82 123 4567 or 082 123 4567",
-        });
-      }
-    }
+    // No email/WhatsApp format checks: accept whatever respondents type so
+    // the UX doesn't bounce them on edge cases (international numbers,
+    // unusual TLDs, etc.).
   });
 
 export type SubmitPayload = z.infer<typeof submitSchema>;

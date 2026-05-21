@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         source: data.source,
         venueSlug: data.venueSlug ?? null,
 
-        peakWeddingsPerMonth: data.peakWeddingsPerMonth,
+        peakWeddingsPerMonth: data.peakWeddingsPerMonth ?? null,
         eventMix: data.eventMix ?? null,
 
         dayToDayOwner: data.dayToDayOwner ?? null,
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
           : null,
 
         willingnessToPay: data.willingnessToPay?.trim() || null,
-        callInterest: data.callInterest,
+        callInterest: data.callInterest ?? null,
 
         venueName: data.venueName?.trim() || null,
         contactName: data.contactName?.trim() || null,
