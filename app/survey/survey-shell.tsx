@@ -1510,14 +1510,18 @@ function Step6() {
       <QuestionBlock
         number={21}
         title="Want to see the results or be considered for the pilot? Leave your details."
-        fieldKey="contact"
+        helper="Venue name is the only one we need — just so we can track which wine farm has responded. Everything else is optional."
+        fieldKey="venueName"
       >
         <div className="grid gap-3">
-          <TextInput
-            value={form.venueName}
-            onChange={(v) => set("venueName", v)}
-            placeholder="Venue name"
-          />
+          <div data-field="venueName">
+            <TextInput
+              value={form.venueName}
+              onChange={(v) => set("venueName", v)}
+              placeholder="Venue name (required)"
+            />
+            {errors.venueName && <ErrorText>{errors.venueName}</ErrorText>}
+          </div>
           <TextInput
             value={form.contactName}
             onChange={(v) => set("contactName", v)}
@@ -1658,6 +1662,18 @@ export default function SurveyShell({
   async function handleSubmit(ev?: React.FormEvent) {
     if (ev) ev.preventDefault();
     setServerError(null);
+
+    // The one required field: venue name, so we can attribute the response.
+    if (!form.venueName.trim()) {
+      const e = {
+        venueName:
+          "Please add your venue name so we can track which farm has responded.",
+      };
+      setErrors(e);
+      if (step !== 6) goToStep(6);
+      scrollToFirstError(e);
+      return;
+    }
     setErrors({});
 
     setSubmitting(true);
@@ -1744,7 +1760,7 @@ export default function SurveyShell({
         willingnessToPay: form.willingnessToPay.trim() || null,
         callInterest: form.callInterest || null,
         additionalComments: form.additionalComments.trim() || null,
-        venueName: form.venueName.trim() || null,
+        venueName: form.venueName.trim(),
         contactName: form.contactName.trim() || null,
         contactRole: form.contactRole.trim() || null,
         whatsapp: form.whatsapp.trim() || null,

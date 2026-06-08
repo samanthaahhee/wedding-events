@@ -318,8 +318,13 @@ export const submitSchema = z
     callInterest: z.enum(CALL_INTEREST).nullable().optional(),
     // Q20 — open-text "anything else?"
     additionalComments: optStr,
-    // Q21 — contact, all optional
-    venueName: optShortStr,
+    // Q21 — contact. Venue name is required so we can attribute the response
+    // to a specific wine farm during outreach follow-up.
+    venueName: z
+      .string()
+      .trim()
+      .min(1, "Please add your venue name")
+      .max(200),
     contactName: optShortStr,
     contactRole: optShortStr,
     whatsapp: optShortStr,
